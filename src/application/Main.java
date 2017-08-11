@@ -15,6 +15,7 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			primaryStage.setTitle("JavaFX ARP Spoofing");
+			System.out.println("코드 변경 테스트입니다.");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
