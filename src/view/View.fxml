@@ -1,22 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="480.0" prefWidth="490.0" fx:controller="controller.Controller"
+<AnchorPane prefHeight="483.0" prefWidth="750.0" fx:controller="controller.Controller"
 	xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ListView fx:id="networkListView" layoutX="15.0" layoutY="14.0"
-      	prefHeight="78.0" prefWidth="462.0">
+      <ListView fx:id="networkListView" layoutX="15.0" layoutY="14.0" 
+      	prefHeight="86.0" prefWidth="462.0">
       	<items>
       		<FXCollections fx:factory="observableArrayList"/>
       	</items>	
       </ListView>
-      <Button fx:id="pickButton" onAction="#networkPickAction" layoutX="395.0" layoutY="103.0"
-      	prefHeight="29.0" prefWidth="82.0" text="PICK" />
-      <TextArea fx:id="textArea" editable="false" layoutX="15.0" layoutY="144.0"
-      	prefHeight="325.0" prefWidth="462.0" />
+      <Button fx:id="pickButton" onAction="#networkPickAction" layoutX="395.0" layoutY="112.0"
+      	prefHeight="29.0" prefWidth="82.0" text="PICK"/>
+      <TextArea fx:id="textArea" editable="false" layoutX="15.0" layoutY="156.0"
+      	prefHeight="313.0" prefWidth="462.0"/>
+      <Label layoutX="486.0" layoutY="14.0" text="My IP">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <Label layoutX="486.0" layoutY="44.0" text="Sender IP">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <Label layoutX="486.0" layoutY="75.0" text="Target IP">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <TextField fx:id="myIP" layoutX="562.0" layoutY="12.0" prefHeight="23.0" prefWidth="175.0"/>
+      <TextField fx:id="senderIP" layoutX="562.0" layoutY="44.0" prefHeight="23.0" prefWidth="175.0"/>
+      <TextField fx:id="targetIP" layoutX="562.0" layoutY="76.0" prefHeight="23.0" prefWidth="175.0"/>
+      <Button fx:id="getMACButton" onAction="#getMACAction" layoutX="654.0" layoutY="112.0"
+      	prefHeight="29.0" prefWidth="82.0" text="GET MAC"/>
    </children>
 </AnchorPane>
-

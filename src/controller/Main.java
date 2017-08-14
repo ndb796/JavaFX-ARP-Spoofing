@@ -14,6 +14,14 @@ public class Main extends Application {
 	public static Pcap pcap = null;	
 	public static PcapIf device = null;
 	
+	public static byte[] myIP = null;
+	public static byte[] senderIP = null;
+	public static byte[] targetIP = null;
+
+	public static byte[] myMAC = null;
+	public static byte[] senderMAC = null;
+	public static byte[] targetMAC = null;
+	
 	private Stage primaryStage;
 	private AnchorPane layout;
 	
