@@ -4,6 +4,7 @@ import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapIf;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -29,6 +30,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("JavaFX ARP Spoofing");
+		this.primaryStage.setOnCloseRequest(e -> System.exit(0));
 		setLayout();
 	}
 	
